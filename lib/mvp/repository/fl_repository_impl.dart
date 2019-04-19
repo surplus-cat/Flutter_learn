@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_learn/model/fl_model.dart';
 import 'package:flutter_learn/common/constant.dart';
-import 'package:flutter_learn/mvp/repository/fl_presenter.dart';
+import 'package:flutter_learn/mvp/repository/fl_repository.dart';
 //分类数据: http://gank.io/api/data/数据类型/请求个数/第几页
 //数据类型： 福利 | Android | iOS | 休息视频 | 拓展资源 | 前端 | all
 //请求个数： 数字，大于0
