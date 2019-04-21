@@ -4,7 +4,7 @@ import 'package:flutter_learn/mvp/repository/ai_repository_impl.dart';
 
 
 class AIPresenterImpl implements AIPresenter {
-  
+
   AIView _view;
 
   AIRepository _repository;

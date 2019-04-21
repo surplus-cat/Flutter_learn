@@ -75,7 +75,7 @@ class _DrawerWeigetState extends State<DrawerWeiget> {
           onTap: () {
             Navigator.of(context).pop();
             Navigator.pushNamed(context, '/ArchitecturePage');
-          }, 
+          },
         ),
         new Divider()
       ],

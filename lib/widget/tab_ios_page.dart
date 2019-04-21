@@ -16,11 +16,11 @@ class IOSAppPage extends StatefulWidget {
     AIPresenter presenter = new AIPresenterImpl(view);
     presenter.init();
     return view;
-  }  
+  }
 }
 
 
-class _IOSAppPageState extends State<IOSAppPage> {
+class _IOSAppPageState extends State<IOSAppPage> implements AIView {
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
@@ -55,7 +55,7 @@ class _IOSAppPageState extends State<IOSAppPage> {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       _loadData();
     }
-  }  
+  }
 
   Future<Null> _refreshData() {
     isSlideUp = false;
@@ -80,7 +80,7 @@ class _IOSAppPageState extends State<IOSAppPage> {
 
     curPageNum = curPageNum + 1;
 
-    _alPresenter.loadAIData('Android', curPageNum, 10);
+    _alPresenter.loadAIData("Android", curPageNum, 10);
 
     setState(() {});
 
@@ -91,17 +91,44 @@ class _IOSAppPageState extends State<IOSAppPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
-  }  
+    var content;
+
+    if (datas.isEmpty) {
+      content = getProgressDialog();
+    } else {
+      content = new ListView.builder(
+        physics: AlwaysScrollableScrollPhysics(),
+        controller: _scrollController,
+        itemCount: datas.length,
+        itemBuilder: buildItem,
+      );
+    }
+
+    var _refreshIndicator = new RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: _refreshData,
+      child: content,
+    );
+
+    return _refreshIndicator;
+  }
+
+  Widget buildItem(BuildContext context, int index) {
+    final AIModel item = datas[index];
+    return new ListTile(
+      onTap: (){
+        RouteUtil.route2Web(context, item.desc, item.url);
+      },
+      title: new Text(item.desc), //子item的标题
+      trailing: new Icon(
+        Icons.arrow_right,
+      ), //显示右侧的箭头，不显示则传null
+    );
+  }
 
   @override
   void onloadFLFail() {
     // TODO: implement onloadFLFail
-  }
-  
-  Widget buildItem(BuildContext context, int index) {
-    
   }
 
   @override
@@ -118,9 +145,19 @@ class _IOSAppPageState extends State<IOSAppPage> {
   }
 
   @override
-  setPrensenter(AIPresenter presenter) {
+  setPresenter(AIPresenter presenter) {
     // TODO: implement setPresenter
     _alPresenter = presenter;
   }
 }
 
+class TabiOSPage extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return new Scaffold(
+      body: new IOSAppPage(),
+    );
+  }
+}

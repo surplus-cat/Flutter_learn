@@ -8,7 +8,7 @@ import 'package:flutter_learn/mvp/presenter/ai_presenter_impl.dart';
 import 'package:flutter_learn/util/routes_util.dart';
 
 class AndroidAppPage extends StatefulWidget {
-  
+
   AndroidAppPage({Key key}) : super(key: key);
 
   @override
@@ -41,10 +41,10 @@ class _AndroidAppPageState extends State<AndroidAppPage> implements AIView {
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _refreshData();
     print('Android');
-  }  
+  }
 
   @override
-  void dispose() { 
+  void dispose() {
     _scrollController.removeListener(_scrollListener);
     super.dispose();
   }
@@ -69,7 +69,7 @@ class _AndroidAppPageState extends State<AndroidAppPage> implements AIView {
 
     completer.complete(null);
 
-    return completer.future;    
+    return completer.future;
   }
 
   Future<Null> _loadData() {
