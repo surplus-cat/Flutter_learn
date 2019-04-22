@@ -70,9 +70,10 @@ class _ChannelPageState extends State<ChannelPage> {
     bool result = await perimissionsPlugin.invokeMethod('askPermissions', perimissions);
 
     return result;
+    
   }
 
-  Future<Null> _goSetting() async {
+  Future<Null> _goSetting () async {
 
     await perimissionsPlugin.invokeMethod('openSetting');
 
@@ -89,23 +90,6 @@ class _ChannelPageState extends State<ChannelPage> {
     perimissions.add("READ_PHONE_STATE");
     perimissions.add("WRITE_EXTERNAL_STORAGE");
 
-
-    void _onAMapEvent(Object event) {
-      Map<String, Object> loc = Map.castFrom(event);
-
-      setState(() {
-        _city = loc['city'];
-        print(event);
-      });
-    }
-
-    void _onAMapError(Object error) {
-      setState(() {
-        _city = "定位异常";
-        print(error);
-      });
-    }
-
     _askPermission(perimissions).then((granted) {
       if (granted) {
         if (_amapSub == null) {
@@ -116,116 +100,132 @@ class _ChannelPageState extends State<ChannelPage> {
       }
     });
 
-    void _endAMapPlugin() {
-      if (_amapSub != null) {
-        _amapSub.cancel();
-      }
-    }
+  }
 
+  void _endAMapPlugin() {
+    if (_amapSub != null) {
+      _amapSub.cancel();
+    }
+  }
+
+  void _onAMapEvent(Object event) {
+    Map<String, Object> loc = Map.castFrom(event);
+
+    setState(() {
+      _city = loc['city'];
+      print(event);
+    });
+  }
+
+  void _onAMapError(Object error) {
+    setState(() {
+      _city = "定位异常";
+      print(error);
+    });
+  }
     
 
-    void _startCounterPlugin(){
-      if (_counterSub == null) {
-        _counterSub = counterPlugin.receiveBroadcastStream().listen(_onCounterEvent, onError: _onCounterError);
-      }
+  void _startCounterPlugin(){
+    if (_counterSub == null) {
+      _counterSub = counterPlugin.receiveBroadcastStream().listen(_onCounterEvent, onError: _onCounterError);
     }
+  }
 
-    void _endCounterPlugin() {
-      if (_counterSub != null) {
-        _counterSub.cancel();
-      }
+  void _endCounterPlugin() {
+    if (_counterSub != null) {
+      _counterSub.cancel();
     }
+  }
 
-    void _onCounterEvent(Object event) {
-      setState(() {
-        _count = event;
-      });
-    }
+  void _onCounterEvent(Object event) {
+    setState(() {
+      _count = event;
+    });
+  }
 
-    void _onCounterError(Object error) {
-      setState(() {
-        _count = "计时器异常";
-        print(error);
-      });
-    }
+  void _onCounterError(Object error) {
+    setState(() {
+      _count = "计时器异常";
+      print(error);
+    });
+  }
 
-    Future<Null> _jumpToNative() async {
-      String result = await jumpPlugin.invokeMethod('oneAct');
+  Future<Null> _jumpToNative() async {
+    String result = await jumpPlugin.invokeMethod('oneAct');
 
-      print(result);
-    }
+    print(result);
+  }
 
-    Future<Null> _jumpToNativeWithValue() async {
+  Future<Null> _jumpToNativeWithValue() async {
 
-      Map<String, String> map = { "flutter": "这是一条来自flutter的参数"};
+    Map<String, String> map = { "flutter": "这是一条来自flutter的参数"};
 
-      String result = await jumpPlugin.invokeMethod('twoAct', map);
+    String result = await jumpPlugin.invokeMethod('twoAct', map);
 
-      print(result);
-    }
+    print(result);
+  }
 
-    @override
-    Widget build(BuildContext context) {
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Channel'),
-          centerTitle: true,
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Channel'),
+        centerTitle: true,
+      ),
+      body: new Center(
+        child: new ListView(
+          children: <Widget>[
+            new Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: new RaisedButton(
+                textColor: Colors.black,
+                child: new Text('跳转到原生界面'),
+                onPressed: () {
+                  _jumpToNative();
+                },
+              ),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: new RaisedButton(
+                textColor: Colors.blueGrey,
+                child: new Text('跳转到原生界面(带参数)'),
+                onPressed: () {
+                  _jumpToNativeWithValue();
+                },
+              ),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: new RaisedButton(
+                textColor: Colors.pink,
+                child: new Text('点击获取当前定位'),
+                onPressed: () {
+                  _startAMapPlugin();
+                },
+              ),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: new RaisedButton(
+                textColor: Colors.purple,
+                child: new Text('停止接收获取当前定位'),
+                onPressed: () {
+                  _endAMapPlugin();
+                },
+              ),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: new Text('这是一个从原生发射过来的计时器: $_count'),
+            ),
+            new Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+              child: new Text('当前定位: $_city'),
+            )
+          ],
         ),
-        body: new Center(
-          child: new ListView(
-            children: <Widget>[
-              new Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                child: new RaisedButton(
-                  textColor: Colors.black,
-                  child: new Text('跳转到原生界面'),
-                  onPressed: () {
-                    _jumpToNative();
-                  },
-                ),
-              ),
-              new Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                child: new RaisedButton(
-                  textColor: Colors.blueGrey,
-                  child: new Text('跳转到原生界面(带参数)'),
-                  onPressed: () {
-                    _jumpToNativeWithValue();
-                  },
-                ),
-              ),
-              new Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                child: new RaisedButton(
-                  textColor: Colors.pink,
-                  child: new Text('点击获取当前定位'),
-                  onPressed: () {
-                    _startAMapPlugin();
-                  },
-                ),
-              ),
-              new Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                child: new RaisedButton(
-                  textColor: Colors.purple,
-                  child: new Text('停止接收获取当前定位'),
-                  onPressed: () {
-                    _endAMapPlugin();
-                  },
-                ),
-              ),
-              new Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                child: new Text('这是一个从原生发射过来的计时器: $_count'),
-              ),
-              new Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                child: new Text('当前定位: $_city'),
-              )
-            ],
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 }
